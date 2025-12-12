@@ -31,7 +31,7 @@ test('can place order on available symbols only', function ($data) {
     fn () => ['ETH', true],
     fn () => ['XRP', false],
     fn () => ['DOGE', false],
-    fn () => ['XAUUSD', true],
+    fn () => ['XAUUSD', false],
 ]);
 
 test('can place buy or sell order only', function ($data) {

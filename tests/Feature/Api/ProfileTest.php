@@ -44,7 +44,7 @@ test('receive user assets balance', function () {
 
     $this->get(route('api.profile'))
         ->assertJson(
-            fn (AssertableJson $json) => $json->where('id', 1)
+            fn (AssertableJson $json) => $json
                 ->where('id', $user->id)
                 ->where('name', $user->name)
                 ->where('email', $user->email)
@@ -52,7 +52,7 @@ test('receive user assets balance', function () {
                 ->whereType('assets', 'array')
                 ->etc()
         )->assertJson(
-            fn (AssertableJson $json) => $json->where('id', 1)
+            fn (AssertableJson $json) => $json
                 ->where('assets.0.symbol', 'BTC')
                 ->where('assets.0.amount', 0.5)
                 ->where('assets.1.symbol', 'ETH')
