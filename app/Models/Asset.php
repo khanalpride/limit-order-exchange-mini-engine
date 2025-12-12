@@ -25,8 +25,8 @@ class Asset extends Model
     protected function casts(): array
     {
         return [
-            'amount' => 'decimal:2',
-            'locked_amount' => 'decimal:2',
+            'amount' => 'double',
+            'locked_amount' => 'double',
         ];
     }
 }

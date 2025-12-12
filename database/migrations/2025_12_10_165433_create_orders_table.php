@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('symbol');
             $table->string('side');
-            $table->decimal('price', 10, 2);
-            $table->decimal('amount', 10, 2);
+            $table->decimal('price', 12, 2);
+            $table->decimal('amount', 18, 8);
             $table->smallInteger('status');
             $table->timestamps();
         });

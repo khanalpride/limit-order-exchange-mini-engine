@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('symbol');
-            $table->decimal('amount', 10, 2);
-            $table->decimal('locked_amount', 10, 2)->default(0);
+            $table->decimal('amount', 18, 8);
+            $table->decimal('locked_amount', 18, 8)->default(0);
             $table->timestamps();
         });
     }
