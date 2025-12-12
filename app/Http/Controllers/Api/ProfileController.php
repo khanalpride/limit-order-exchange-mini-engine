@@ -21,9 +21,7 @@ class ProfileController
             'name' => $user->name,
             'email' => $user->email,
             'balance' => $user->balance,
-            'assets' => $user->assets->mapWithKeys(function ($asset) {
-                return [$asset->symbol => $asset->amount];
-            })->toArray(),
+            'assets' => $user->assets,
         ]);
     }
 }

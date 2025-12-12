@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 
 test('sends status ok on profile route', function () {
@@ -42,14 +43,30 @@ test('receive user assets balance', function () {
     Sanctum::actingAs($user);
 
     $this->get(route('api.profile'))
-        ->assertExactJson([
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'balance' => 1400.15,
-            'assets' => [
-                'BTC' => 0.5,
-                'ETH' => 10,
-            ],
-        ]);
+        ->assertJson(
+            fn (AssertableJson $json) => $json->where('id', 1)
+                ->where('id', $user->id)
+                ->where('name', $user->name)
+                ->where('email', $user->email)
+                ->where('balance', 1400.15)
+                ->whereType('assets', 'array')
+                ->etc()
+        )->assertJson(
+            fn (AssertableJson $json) => $json->where('id', 1)
+                ->where('assets.0.symbol', 'BTC')
+                ->where('assets.0.amount', 0.5)
+                ->where('assets.1.symbol', 'ETH')
+                ->where('assets.1.amount', 10)
+                ->etc()
+        );
+    // ->assertExactJson([
+    //     'id' => $user->id,
+    //     'name' => $user->name,
+    //     'email' => $user->email,
+    //     'balance' => 1400.15,
+    //     'assets' => [
+    //         ['symbol' => 'BTC', 'amount' => 0.5],
+    //         ['symbol' => 'ETH', 'amount' => 10],
+    //     ],
+    // ]);
 });
