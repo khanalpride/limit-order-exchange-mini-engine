@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import api from '@/services/api'
@@ -17,6 +17,10 @@ const selectedSymbol = ref('all')
 const selectedSide = ref('all')
 const loading = ref(true)
 const loadingOrders = ref(false)
+const userId = ref(null)
+
+const instance = getCurrentInstance()
+const echo = instance?.appContext.config.globalProperties.$echo
 
 const formatTime = (timestamp) => {
     return dayjs(timestamp).fromNow()
@@ -46,9 +50,9 @@ const fetchProfile = async () => {
         const response = await api.get('/profile')
         const data = response.data
 
-        // Extract balance and assets from profile response
         balance.value = data.balance || data.data?.balance || '0.00'
         assets.value = data.assets || data.data?.assets || []
+        userId.value = data.id || data.data?.id || null
     } catch (err) {
         showError('Failed to load profile data')
     }
@@ -95,6 +99,34 @@ onMounted(async () => {
     loading.value = true
     await Promise.all([fetchProfile(), fetchOrders()])
     loading.value = false
+
+    // Set up WebSocket listener for OrderMatched event
+    if (echo && userId.value) {
+        echo.private(`user.${userId.value}`).listen('OrderMatched', (data) => {
+            console.log('OrderMatched event received:', data)
+
+            // Update the specific order in the orders list
+            if (data.order) {
+                const orderIndex = orders.value.findIndex((o) => o.id === data.order.id)
+                if (orderIndex === -1) {
+                    fetchOrders()
+                } else {
+                    // Update the existing order
+                    orders.value[orderIndex] = { ...orders.value[orderIndex], ...data.order }
+                }
+            }
+
+            // refetch profile to update assets
+            fetchProfile()
+        })
+    }
+})
+
+onBeforeUnmount(() => {
+    // Clean up WebSocket listener
+    if (echo && userId.value) {
+        echo.leave(`user.${userId.value}`)
+    }
 })
 </script>
 
