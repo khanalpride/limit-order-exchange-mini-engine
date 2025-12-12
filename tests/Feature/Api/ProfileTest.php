@@ -24,7 +24,7 @@ test('receive actual user balance in usd', function () {
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'balance' => '1500.75',
+            'balance' => 1500.75,
             'assets' => [],
         ]);
 });
@@ -46,10 +46,10 @@ test('receive user assets balance', function () {
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'balance' => '1400.15',
+            'balance' => 1400.15,
             'assets' => [
-                'BTC' => '0.50',
-                'ETH' => '10.00',
+                'BTC' => 0.5,
+                'ETH' => 10,
             ],
         ]);
 });

@@ -4,11 +4,10 @@ namespace App\Enums;
 
 use App\Concerns\HasBackedEnum;
 
-enum OrderStatus: int
+enum OrderSide: string
 {
     use HasBackedEnum;
 
-    case OPEN = 1;
-    case FILLED = 2;
-    case CANCELLED = 3;
+    case BUY = 'buy';
+    case SELL = 'sell';
 }
