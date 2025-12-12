@@ -8,6 +8,8 @@ Route::get('profile', ProfileController::class)
     ->middleware('auth:sanctum')
     ->name('api.profile');
 
-Route::get('orders', [OrderController::class, 'index'])
-    ->middleware('auth:sanctum')
-    ->name('api.orders');
+Route::prefix('orders')->middleware('auth:sanctum')->name('api.orders.')->group(function () {
+    Route::get('/', [OrderController::class, 'index'])->name('index');
+    Route::post('/', [OrderController::class, 'store'])->name('store');
+    Route::post('{id}/cancel', [OrderController::class, 'destroy'])->name('destroy');
+});

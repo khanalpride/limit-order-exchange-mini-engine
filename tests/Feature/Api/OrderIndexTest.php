@@ -3,7 +3,6 @@
 use App\Enums\OrderSide;
 use App\Enums\OrderStatus;
 use App\Models\User;
-use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 
 test('sends status ok on order route', function () {
@@ -11,12 +10,9 @@ test('sends status ok on order route', function () {
 
     Sanctum::actingAs($user);
 
-    $this->get(route('api.orders'))
+    $this->get(route('api.orders.index'))
         ->assertStatus(200)
         ->assertJsonCount(0, 'orders');
-    // ->assertJson(fn (AssertableJson $json) =>
-    //     $json->etc()
-    // );
 });
 
 test('receive user open orders in correct order', function () {
@@ -33,7 +29,7 @@ test('receive user open orders in correct order', function () {
 
     Sanctum::actingAs($user);
 
-    $this->get(route('api.orders'))
+    $this->get(route('api.orders.index'))
         ->assertJsonCount(2, 'orders')
         ->assertJsonPath('orders.0.symbol', 'ETH')
         ->assertJsonPath('orders.1.symbol', 'BTC');
@@ -53,7 +49,7 @@ test('receive only open orders by default on filtering by symbol', function () {
 
     Sanctum::actingAs($user);
 
-    $this->get(route('api.orders', ['symbol' => 'BTC']))
+    $this->get(route('api.orders.index', ['symbol' => 'BTC']))
         ->assertJsonCount(1, 'orders')
         ->assertJsonPath('orders.0.symbol', 'BTC');
 });
@@ -73,7 +69,7 @@ test('receive only open buy orders by default on filtering by symbol and buy sid
 
     Sanctum::actingAs($user);
 
-    $this->get(route('api.orders', ['symbol' => 'BTC', 'side' => 'buy']))
+    $this->get(route('api.orders.index', ['symbol' => 'BTC', 'side' => 'buy']))
         ->assertJsonCount(1, 'orders')
         ->assertJsonPath('orders.0.symbol', 'BTC')
         ->assertJsonPath('orders.0.side', 'buy')
@@ -95,7 +91,7 @@ test('receive only open sell orders by default on filtering by symbol and sell s
 
     Sanctum::actingAs($user);
 
-    $this->get(route('api.orders', ['symbol' => 'BTC', 'side' => 'sell']))
+    $this->get(route('api.orders.index', ['symbol' => 'BTC', 'side' => 'sell']))
         ->assertJsonCount(1, 'orders')
         ->assertJsonPath('orders.0.symbol', 'BTC')
         ->assertJsonPath('orders.0.side', 'sell')
