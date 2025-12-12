@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Enums\OrderSide;
 use App\Enums\OrderStatus;
+use App\Events\OrderMatched;
 use App\Models\Order;
 use App\Models\User;
 
@@ -178,6 +179,9 @@ class PlaceOrder
 
         $sellOrder->status = OrderStatus::FILLED;
         $sellOrder->save();
+
+        OrderMatched::dispatch($buyOrder);
+        OrderMatched::dispatch($sellOrder);
 
         // insert to trades table
     }
